@@ -121,6 +121,9 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
+let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_php_checkers = ['php', 'phpcs', 'phpmd']
+
 " Settings for Writting
 let g:pencil#wrapModeDefault = 'soft'   " default is 'hard'
 
@@ -131,12 +134,34 @@ augroup pencil
   autocmd FileType text         call pencil#init()
 augroup END
 
+filetype plugin indent on           " required
+
+" /******************************************
+" * File types                              *
+" * Detect file types and set unknown ones. *
+" ******************************************/
+autocmd BufRead,BufNewFile *.feature set filetype=ruby
+autocmd BufRead,BufNewFile *.handlebars set filetype=html
+autocmd BufRead,BufNewFile *.hbs set filetype=html
+autocmd BufRead,BufNewFile *.spv set filetype=html
+autocmd BufRead,BufNewFile *.js highlight javaScriptComment ctermfg=Magenta
+autocmd BufRead,BufNewFile *.js highlight javaScriptLineComment ctermfg=Magenta
+autocmd BufRead,BufNewFile *.less set filetype=css
+autocmd BufRead,BufNewFile *.sass set filetype=css
+autocmd BufRead,BufNewFile *.scss set filetype=css
+
 " Enable omni completion.
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" /***********************
+" * NERDTree WebDevIcons *
+" ************************/
+autocmd FileType nerdtree syntax match hideBracketsInNerdTree "\]" contained conceal containedin=ALL
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
 
 " Enable heavy omni completion.
 if !exists('g:neocomplete#sources#omni#input_patterns')
@@ -242,6 +267,9 @@ if &shell =~# 'fish$'
  set shell=/bin/bash
 endif
 
+"""""""""""""""""""""""""""""""""""""""""""""""""
+"	Edit config
+"""""""""""""""""""""""""""""""""""""""""""""""""
       " Put all temporary files under the same directory.
       "
 "       https://github.com/mhinz/vim-galore#handling-backup-swap-undo-and-viminfo-files
@@ -256,8 +284,14 @@ set undodir     =$HOME/.vim/files/undo/
 set viminfo     ='100,n$HOME/.vim/files/info/viminfo
 
 set guifont	=Roboto\ Mono\ Regular\ 16
-" let g:WebDevIconsNerdTreeAfterGlyphPadding = '  '
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
-let g:Tlist_WinWidth=45
-let g:NERDTreeWinSize=60
+let g:Tlist_WinWidth=30
+let g:NERDTreeWinSize=30
+let g:nerdtree_tabs_open_on_console_startup = 1
+set ambiwidth=double
+
+" after a re-source, fix syntax matching issues (concealing brackets):
+if exists('g:loaded_webdevicons')
+    call webdevicons#refresh()
+endif
